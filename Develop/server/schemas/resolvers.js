@@ -9,7 +9,7 @@ const resolvers = {
             return User.findOne({ _id: context.user._id })
         }
 
-        throw new AuthenticationError('Not Logged In')
+        console.error('Not Logged In')
     }
 },
 
@@ -17,14 +17,14 @@ Mutation: {
     login: async (parent, { email, password }) => {
         const user = await User.findOne({ email })
         if (!user) {
-            throw new AuthenticationError('No user found with this email address');
+            console.error('No user found with this email address');
         }
         const correctPw = await user.isCorrectPassword(password);
         if (!correctPw) {
-            throw new AuthenticationError('Incorrect Password')
+            console.error('Incorrect Password')
         }
         const token = signToken(user);
-        return { token, user };
+        return { token, user: user };
     },
     addUser: async (parent, { username, email, password }) => {
         const newUser = await User.create({ username, email, password });
@@ -32,7 +32,7 @@ Mutation: {
         return { token, user: newUser };
     },
     saveBook: async (parent, { userId, book }) => {
-        const updatedUser = User.findOneAndUpdate(
+        const updatedUser = await User.findOneAndUpdate(
             {_id: userId },
             {
                 $addToSet: { savedBooks: book },
@@ -48,10 +48,10 @@ Mutation: {
 
         return updatedUser
     },
-    removeBook: async (parent, { userId, book }) => {
+    removeBook: async (parent, { userId, bookId }) => {
         return User.findOneAndUpdate(
             { _id: userId },
-            { $pull: { books: book }},
+            { $pull: { savedBooks: { books: bookId }}},
             { new: true }
 
         );

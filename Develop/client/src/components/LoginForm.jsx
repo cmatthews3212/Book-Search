@@ -17,16 +17,16 @@ const LoginForm = () => {
     setUserFormData({ ...userFormData, [name]: value });
   };
 
-  const [getUser, { error }] = useMutation(LOGIN_USER)
+  const [login, { error }] = useMutation(LOGIN_USER)
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
     // check if form has everything (as per react-bootstrap docs)
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+    // const form = event.currentTarget;
+    // if (form.checkValidity() === false) {
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    // }
 
 
     try {
@@ -39,10 +39,14 @@ const LoginForm = () => {
       // const { token, user } = await response.json();
       // console.log(user);
       // Auth.login(token);
+     
 
-      const { data } = await getUser({
-        variables: { email: userFormData.email}
+      const { data } = await login({
+        variables: { ...userFormData }
       })
+
+      Auth.login(data.login.token)
+      console.log(Auth.loggedIn())
 
     } catch (err) {
       console.error(err);
@@ -50,7 +54,6 @@ const LoginForm = () => {
     }
 
     setUserFormData({
-      username: '',
       email: '',
       password: '',
     });
