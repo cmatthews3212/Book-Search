@@ -19,61 +19,62 @@ import { REMOVE_BOOK } from '../utils/mutations';
 
 const SavedBooks = () => {
   const { loading, data } = useQuery(GET_ME);
-  console.log(GET_ME)
 
-  // const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState({});
   const [removeBook] = useMutation(REMOVE_BOOK);
-
-  const userData = data?.me || {};
-  console.log(userData.savedBooks)
+  
+  // const userData = data?.me || {};
+  // console.log(userData.savedBooks)
 
   if (!userData.savedBooks) {
     return <h2>No saved books found.</h2>
   }
-
-
+  
+  
   // use this to determine if `useEffect()` hook needs to run again
-  // const userDataLength = Object.keys(userData).length;
+  const userDataLength = Object.keys(userData).length;
+  
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const token = Auth.loggedIn() ? Auth.getToken() : null;
 
-  // useEffect(() => {
-  //   const getUserData = async () => {
-  //     try {
-  //       const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-  //       if (!token) {
-  //         return false;
-  //       }
-
-  //       // const response = await getMe(token);
-
-  //       // if (!response.ok) {
-  //       //   throw new Error('something went wrong!');
-  //       // }
+        if (!token) {
+          return false;
+        }
+        
+        const response = await getMe(token);
+        
+        if (!response.ok) {
+          throw new Error('something went wrong!');
+        }
      
 
-  //       // const user = await response.json();
-  //       setUserData(userData);
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-    // };
-
- 
-
- 
-
-
-  //   getUserData();
-  // }, [userDataLength]);
-
+        const user = await response.json();
+        setUserData(user);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    // getUserData()
+    
+    
+    
+    
+    
+    
+    
+    getUserData();
+  }, [userDataLength]);
+  
   // const [login, {error}] = useMutation(LOGIN_USER, {
-  //   refetchQueries: [
-  //     GET_ME,
-  //     userData
-  //   ]
-  // });
-
-
+    //   refetchQueries: [
+      //     GET_ME,
+      //     userData
+      //   ]
+      // });
+      
+      
  
 
 
@@ -109,7 +110,7 @@ const SavedBooks = () => {
   };
 
   // if data isn't here yet, say so
-  if (loading) {
+  if (!userDataLength) {
     return <h2>LOADING...</h2>;
   }
 
