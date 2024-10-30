@@ -7,7 +7,7 @@ const { ApolloServer } = require('@apollo/server');
 const { expressMiddleware } = require('@apollo/server/express4');
 const { authMiddleware } = require('./utils/auth');
 
-const cors = require('cors');
+// const cors = require('cors');
 
 const { typeDefs, resolvers } = require('./schemas');
 const { __Directive } = require('graphql');
@@ -25,7 +25,7 @@ const server = new ApolloServer({
 
 const startApolloServer = async () => {
   await server.start();
-  app.use(cors());
+  // app.use(cors());
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
   // if we're in production, serve client/build as static assets
