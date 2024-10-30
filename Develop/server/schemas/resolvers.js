@@ -5,8 +5,12 @@ const resolvers = {
     Query: {  
 
     me: async (parent, args, context ) => {
+        console.log(context)
+    
         if (context.user) {
-            return User.findOne({ _id: context.user._id })
+            const user = await User.findOne({ _id: context.user._id })
+            console.log(user)
+            return user
         }
 
         console.error('Not Logged In')
@@ -51,7 +55,7 @@ Mutation: {
     removeBook: async (parent, { userId, bookId }) => {
         return User.findOneAndUpdate(
             { _id: userId },
-            { $pull: { savedBooks: { books: bookId }}},
+            { $pull: { savedBooks: { bookId }}},
             { new: true }
 
         );

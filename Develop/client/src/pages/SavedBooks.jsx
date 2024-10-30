@@ -20,10 +20,10 @@ import { REMOVE_BOOK } from '../utils/mutations';
 const SavedBooks = () => {
   const { loading, data } = useQuery(GET_ME);
 
-  const [userData, setUserData] = useState({});
+  // const [userData, setUserData] = useState({});
   const [removeBook] = useMutation(REMOVE_BOOK);
   
-  // const userData = data?.me || {};
+  const userData = data?.me || {};
   // console.log(userData.savedBooks)
 
   if (!userData.savedBooks) {
@@ -99,8 +99,10 @@ const SavedBooks = () => {
       // setUserData(updatedUser);
       // upon success, remove book's id from localStorage
        await removeBook({
-        variables: { bookId },
-        refetchQueries: [{ query: GET_ME }],
+        variables: { 
+          userId: Auth.getProfile().data._id,
+          bookId
+         }
       });
 
       removeBookId(bookId);
